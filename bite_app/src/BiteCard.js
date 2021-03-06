@@ -4,11 +4,8 @@ import {useSpring, animated } from 'react-spring'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 
-export default function BiteCard({isRestaurant, isBar, price, rating, title, address, imageUrl, changeMeal}) {
-    const [open, toggle] = useState(true)
-    const props = useSpring({ opacity: open ? 1 : 0, marginTop: open ? 0 : -300, transform: `perspective(600px) rotateY(${open ? 0 : 360}deg)`, config: { mass: 5, tension: 500, friction: 80 } })
+export default function BiteCard({isRestaurant, isBar, price, rating, title, address, imageUrl, changeMeal, toggle, open}) {
       return(
-          <animated.div style={props}>
           <Center py={12}>
           <Box
             role={'group'}
@@ -71,5 +68,4 @@ export default function BiteCard({isRestaurant, isBar, price, rating, title, add
             </Stack>
           </Box>
         </Center>
-          </animated.div>
       )}

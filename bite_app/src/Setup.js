@@ -4,7 +4,7 @@ import {useSpring, animated } from 'react-spring'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUtensils } from '@fortawesome/free-solid-svg-icons'
 
-export default function Setup({createLocalArray, maxPriceRating, setMaxPriceRating, minUserRating, setMinUserRating, maxDistance, setMaxDistance}) {
+export default function Setup({createLocalArray, maxPriceRating, setMaxPriceRating, minUserRating, setMinUserRating, maxDistance, setMaxDistance, setSetup, toggle_parent, open_parent}) {
     const [open, toggle] = useState(true)
     const props = useSpring({ transform: `perspective(600px) rotateX(${open ? 0 : 360}deg)`, config: { mass: 5, tension: 500, friction: 80 } })
       return(
@@ -61,6 +61,7 @@ export default function Setup({createLocalArray, maxPriceRating, setMaxPriceRati
                         toggle(open => !open)
                     }, 600);
                     createLocalArray(loading);
+                    toggle_parent(!open_parent); setTimeout(() => setSetup(false), 300); setTimeout(() => toggle_parent(open_parent), 1000)
                 }}></IconButton>
             </Stack>
           </Box>

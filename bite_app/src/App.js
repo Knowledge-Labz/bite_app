@@ -5,13 +5,9 @@ import {
   Center
 } from '@chakra-ui/react';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from "react-router-dom";
 import ls from 'local-storage';
 import { usePosition } from 'use-position';
+import {useSpring, animated } from 'react-spring';
 import BiteCard from './BiteCard';
 import Setup from './Setup';
 
@@ -26,6 +22,7 @@ function App() {
   const [userRating, setUserRating] = useState(1);
   const [isBar, setIsBar] = useState(true);
   const [isRestaurant, setIsRestaurant] = useState(true);
+  const [setup, setSetup] = useState(true);
   const [imgData, setImgData] = useState("");
   const watch = true;
   const {
@@ -82,15 +79,14 @@ function App() {
     changeMeal();
     if (ls.get('bite_app_array')) { return true; }else{ return false; }
   }
-
+  const [open, toggle] = useState(true)
+  const props = useSpring({ opacity: open ? 1 : 0, marginTop: open ? 0 : -300, transform: `perspective(600px) rotateY(${open ? 0 : 360}deg)`, config: { mass: 5, tension: 500, friction: 80 } })
   return (
     <ChakraProvider theme={theme}>
       <ColorModeSwitcher justifySelf="flex-end" />
         <Center>
-        <Router>
-          <Switch>
-            <Route path="/setup">
-              <Setup
+        <animated.div style={props}>
+        { setup ? <Setup
                 createLocalArray={createLocalArray}
                 maxDistance={maxDistance}
                 setMaxDistance={setMaxDistance}
@@ -98,9 +94,9 @@ function App() {
                 setMaxPriceRating={setMaxPriceRating}
                 minUserRating={minUserRating}
                 setMinUserRating={setMinUserRating}
-                />
-            </Route>
-            <Route path="/app">
+                setSetup={setSetup}
+                open_parent={open}
+                toggle_parent={toggle}/> :
               <BiteCard
               address={address}
               imageUrl="https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tweety.svg/1200px-Tweety.svg.png"
@@ -109,10 +105,10 @@ function App() {
               isBar={isBar}
               price={priceRating} 
               rating={userRating}
-              changeMeal={changeMeal}/>
-            </Route> 
-          </Switch>
-        </Router>
+              changeMeal={changeMeal}
+              open={open}
+              toggle={toggle}/> }
+        </animated.div>  
       </Center>
     </ChakraProvider>
   );
