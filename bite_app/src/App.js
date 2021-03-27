@@ -63,17 +63,19 @@ function App() {
     ls.remove('bite_app_array');
     let requestOptions = {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': '*/*', 'Connection': 'keep-alive' },
+      headers: { 'Content-Type': 'application/json', 'Accept': '*/*', 'Connection': 'keep-alive', 'Accept-Encoding': 'gzip, deflate, br' },
       body: JSON.stringify({
+        "verb": "create",
         "long": longitude,
         "lat": latitude,
-        "minprice": 1,
-        "maxprice": maxPriceRating
+        "radius": maxDistance,
+        "minPrice": 1,
+        "maxPrice": maxPriceRating
       })
     }
-    const response = await fetch('http://localhost:5000/query', requestOptions);
+    const response = await fetch('https://clb4c9g6i7.execute-api.us-east-1.amazonaws.com/free_bite_dev/bite', requestOptions);
     const data = await response.json();
-    ls.set('bite_app_array', data);
+    ls.set('bite_app_array', data["Results"]);
     console.log(ls.get('bite_app_array'));
     clearInterval(interval);
     changeMeal();
