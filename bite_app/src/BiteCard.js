@@ -51,10 +51,10 @@ export default function BiteCard({isRestaurant, isBar, price, rating, title, add
             <Stack pt={10} align={'center'}>
               { isRestaurant ? <Badge borderRadius="full" px="2" colorScheme="orange">Restaurant</Badge> : <span/>}
               { isBar ? <Badge borderRadius="full" px="2" colorScheme="red">Bar</Badge> : <span/>}
-              <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
+              <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500} textAlign={'center'}>
                 {title}
               </Heading>
-              <Text fontWeight={200} fontSize={'s'}>
+              <Text fontWeight={200} fontSize={'s'} textAlign={'center'}>
                 {address}
               </Text>
               <Stack direction={'column'} align={'center'}>

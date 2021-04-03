@@ -60,8 +60,8 @@ export default function Setup({createLocalArray, maxPriceRating, setMaxPriceRati
                     const loading = setInterval(() => {
                         toggle(open => !open)
                     }, 600);
-                    createLocalArray(loading);
-                    toggle_parent(!open_parent); setTimeout(() => setSetup(false), 300); setTimeout(() => toggle_parent(open_parent), 1000)
+                    createLocalArray(loading, toggle_parent, open_parent);
+                    //toggle_parent(!open_parent); setTimeout(() => setSetup(false), 300); setTimeout(() => toggle_parent(open_parent), 1000) 
                 }}></IconButton>
             </Stack>
           </Box>

@@ -39,7 +39,7 @@ function App() {
   // changeMeal will be invoked by clicking BiteCard's only button
   const changeMeal = () => {
     console.log("changeMeal invoked", ls.get('bite_app_array'));
-    let my_places = ls.get('bite_app_array').filter(place => place.business_status === "OPERATIONAL" && place.price_level < maxPriceRating && place.rating > minUserRating);// place.price < maxPriceRating && place.price < maxPriceRating);
+    let my_places = ls.get('bite_app_array').filter(place => place.business_status === "OPERATIONAL");
     console.log(my_places)
     if (my_places.length > 0) {
       let random_number = Math.floor(Math.random() * my_places.length);
@@ -58,8 +58,7 @@ function App() {
   }
 
   // createLocalArray will be invoked upon leaving the config menu, and populates the local-storage with data from the backend BiteApp API call
-  const createLocalArray = async (interval) => {
-    console.log(longitude, latitude)
+  const createLocalArray = async (interval, toggle_parent, open_parent) => {
     ls.remove('bite_app_array');
     let requestOptions = {
       method: 'POST',
@@ -69,17 +68,47 @@ function App() {
         "long": longitude,
         "lat": latitude,
         "radius": maxDistance,
-        "minPrice": 1,
+        "minPrice": 0,
         "maxPrice": maxPriceRating
       })
     }
     const response = await fetch('https://clb4c9g6i7.execute-api.us-east-1.amazonaws.com/free_bite_dev/bite', requestOptions);
     const data = await response.json();
+    console.log(data)
     ls.set('bite_app_array', data["Results"]);
-    console.log(ls.get('bite_app_array'));
-    clearInterval(interval);
-    changeMeal();
-    if (ls.get('bite_app_array')) { return true; }else{ return false; }
+    if (data["NextPageToken"] !== "") {
+      await new Promise(r => setTimeout(r, 2000));
+      let requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': '*/*', 'Connection': 'keep-alive', 'Accept-Encoding': 'gzip, deflate, br' },
+        body: JSON.stringify({
+          "verb": "nextpage",
+          "pageToken": data["NextPageToken"]
+        })
+      }
+      const stage2_response = await fetch('https://clb4c9g6i7.execute-api.us-east-1.amazonaws.com/free_bite_dev/bite', requestOptions);
+      const stage2_data = await stage2_response.json();
+      ls.set('bite_app_array', data["Results"].concat(stage2_data["Results"]));
+      if (stage2_data["NextPageToken"] !== "") {
+        await new Promise(r => setTimeout(r, 2000));
+        let requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': '*/*', 'Connection': 'keep-alive', 'Accept-Encoding': 'gzip, deflate, br' },
+          body: JSON.stringify({
+            "verb": "nextpage",
+            "pageToken": stage2_data["NextPageToken"]
+          })
+        }
+        const stage3_response = await fetch('https://clb4c9g6i7.execute-api.us-east-1.amazonaws.com/free_bite_dev/bite', requestOptions);
+        const stage3_data = await stage3_response.json();
+        ls.set('bite_app_array', data["Results"].concat(stage2_data["Results"], stage3_data["Results"]))
+      }
+      changeMeal();
+      clearInterval(interval);
+      toggle_parent(!open_parent);
+      setTimeout(() => setSetup(false), 300); 
+      setTimeout(() => toggle_parent(open_parent), 1000);
+    }
   }
   const [open, toggle] = useState(true)
   const props = useSpring({ opacity: open ? 1 : 0, marginTop: open ? 0 : -300, transform: `perspective(600px) rotateY(${open ? 0 : 360}deg)`, config: { mass: 5, tension: 500, friction: 80 } })
