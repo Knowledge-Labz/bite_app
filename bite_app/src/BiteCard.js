@@ -1,8 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Image, useColorModeValue, Text, Stack, Heading, Center, Badge } from '@chakra-ui/react';
-import {useSpring, animated } from 'react-spring'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 
 export default function BiteCard({isRestaurant, isBar, price, rating, title, address, imageUrl, changeMeal, toggle, open}) {
       return(
@@ -30,7 +27,6 @@ export default function BiteCard({isRestaurant, isBar, price, rating, title, add
                 pos: 'absolute',
                 top: 5,
                 left: 0,
-                backgroundImage: `url(${imageUrl})`,
                 filter: 'blur(15px)',
                 zIndex: -1,
               }}

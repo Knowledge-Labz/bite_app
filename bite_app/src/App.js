@@ -43,7 +43,23 @@ function App() {
     console.log(my_places)
     if (my_places.length > 0) {
       let random_number = Math.floor(Math.random() * my_places.length);
+
       let my_choice = my_places[random_number];
+      const randomPhoto = Math.floor(Math.random() * my_choice.photos.length);
+      let photo_ref = my_choice.photos[randomPhoto].photo_reference
+      const imageRequestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': '*/*', 'Connection': 'keep-alive' },
+        body: JSON.stringify({
+          "verb": "photo",
+          "photoRef" : photo_ref
+        })
+      };
+      fetch('https://clb4c9g6i7.execute-api.us-east-1.amazonaws.com/free_bite_dev/bite', imageRequestOptions)
+        .then(response => response.blob())
+        .then(blob => blob.text())
+        .then(b64Str => setImgData(`data:image/png;base64,${b64Str}`))
+      //console.log(imgData);
       setTitle(my_choice.name);
       setAddress(my_choice.vicinity);
       setPriceRating(my_choice.price_level);
@@ -130,7 +146,7 @@ function App() {
                 toggle_parent={toggle}/> :
               <BiteCard
               address={address}
-              imageUrl="https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tweety.svg/1200px-Tweety.svg.png"
+              imageUrl={imgData}
               title={title} 
               isRestaurant={isRestaurant} 
               isBar={isBar}
