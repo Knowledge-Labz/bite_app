@@ -39,7 +39,7 @@ function App() {
   // changeMeal will be invoked by clicking BiteCard's only button
   const changeMeal = () => {
     console.log("changeMeal invoked", ls.get('bite_app_array'));
-    let my_places = ls.get('bite_app_array').filter(place => place.business_status === "OPERATIONAL");
+    let my_places = ls.get('bite_app_array').filter(place => place.business_status === "OPERATIONAL").filter(place => place.price_level <= maxPriceRating).filter(place => place.rating >= minUserRating);
     console.log(my_places)
     if (my_places.length > 0) {
       let random_number = Math.floor(Math.random() * my_places.length);
@@ -85,7 +85,7 @@ function App() {
         "lat": latitude,
         "radius": maxDistance,
         "minPrice": 0,
-        "maxPrice": maxPriceRating
+        "maxPrice": 5
       })
     }
     const response = await fetch('https://clb4c9g6i7.execute-api.us-east-1.amazonaws.com/free_bite_dev/bite', requestOptions);
